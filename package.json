@@ -10,12 +10,14 @@
     "lint": "expo lint",
     "test": "jest",
     "test:ci": "jest --ci",
-    "verify": "tsc --noEmit && expo lint && jest --ci"
+    "verify": "tsc --noEmit && expo lint && jest --ci",
+    "ios": "expo run:ios"
   },
   "dependencies": {
     "@expo-google-fonts/dm-serif-display": "^0.4.2",
     "@expo-google-fonts/inter": "^0.4.2",
     "@expo-google-fonts/jetbrains-mono": "^0.4.1",
+    "@expo/vector-icons": "^15.0.3",
     "expo": "~54.0.36",
     "expo-constants": "~18.0.14",
     "expo-device": "~8.0.10",
@@ -35,6 +37,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
+    "react-native-ble-plx": "^3.5.1",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
     "react-native-svg": "15.12.1",
