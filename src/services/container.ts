@@ -7,6 +7,7 @@ import { BLEManager } from './bluetooth/BLEManager';
 import type { BleTransport } from './bluetooth/BLETypes';
 import { CalibrationService } from './calibration/CalibrationService';
 import { PhotoStorage } from './camera/PhotoStorage';
+import { ExportService } from './export/ExportService';
 import { TimerService } from './notifications/TimerService';
 import { requestBluetooth } from './permissions/permissions';
 import type { FileStore } from './storage/FileStore';
@@ -18,6 +19,7 @@ export interface Services {
   backup: BackupService;
   calibration: CalibrationService;
   timers: TimerService;
+  exporter: ExportService;
   ble: BLEManager | null;
   transportKind: 'native' | 'mock' | 'unavailable';
 }
@@ -55,6 +57,7 @@ export async function createServices(deps: ContainerDeps): Promise<Services> {
     backup: new BackupService(repos, fs, photos.dir),
     calibration: new CalibrationService(repos.calibrations),
     timers: deps.timerService?.(repos) ?? new TimerService(repos.timers),
+    exporter: new ExportService(fs),
     ble,
     transportKind: transport ? transport.kind : 'unavailable',
   };
