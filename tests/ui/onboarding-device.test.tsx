@@ -42,7 +42,7 @@ describe('Splash & Welcome', () => {
     useAppStore.setState({ status: 'error', bootError: 'disk full' });
     renderScreen(<Splash />);
     expect(screen.getByText(/disk full/)).toBeTruthy();
-    useAppStore.setState({ status: 'ready' });
+    act(() => useAppStore.setState({ status: 'ready' }));
   });
 
   it('pages through and persists onboarding completion', async () => {
