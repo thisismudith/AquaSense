@@ -47,6 +47,7 @@ export async function createServices(deps: ContainerDeps): Promise<Services> {
       repos,
       ensurePermissions: deps.ensureBlePermissions ?? (() => requestBluetooth()),
       autoSync: async () => (await repos.settings.get('devicePreferences')).autoSync,
+      autoReconnect: async () => (await repos.settings.get('devicePreferences')).autoReconnect,
     });
     await ble.init();
   }

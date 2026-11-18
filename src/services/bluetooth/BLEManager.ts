@@ -39,6 +39,7 @@ export interface BleManagerDeps {
   ensurePermissions: () => Promise<PermissionOutcome>;
   sleep?: (ms: number) => Promise<void>;
   autoSync?: () => Promise<boolean>;
+  autoReconnect?: () => Promise<boolean>;
 }
 
 /** Identifies ESP32-A by advertised service UUID or name prefix (config only). */
@@ -208,8 +209,13 @@ export class BLEManager {
       return;
     }
     const bleId = this.snap.connectedBleId;
-    this.set({ state: 'reconnecting', lastError: e ?? new BleError('disconnected', 'Connection lost') });
-    if (!bleId) return this.set({ state: 'disconnected' });
+    const lost = e ?? new BleError('disconnected', 'Connection lost');
+    // Reflect the drop immediately, before any async preference read.
+    this.set({ state: bleId ? 'reconnecting' : 'disconnected', lastError: lost });
+    if (!bleId || !((await this.deps.autoReconnect?.()) ?? true)) {
+      this.set({ state: 'disconnected', lastError: lost, measurementStage: null });
+      return;
+    }
     const { maxAttempts, baseDelayMs, maxDelayMs } = BLE_PROTOCOL.reconnect;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       this.set({ reconnectAttempt: attempt });

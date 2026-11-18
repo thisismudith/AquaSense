@@ -190,6 +190,16 @@ describe('measurement (MOCK-BLE)', () => {
     expect(mgr.snapshot.reconnectAttempt).toBe(0);
   });
 
+  it('auto-reconnect disabled → link loss goes straight to disconnected', async () => {
+    const m2 = new BLEManager({ transport, repos, ensurePermissions: async () => 'granted', sleep: async () => undefined, autoReconnect: async () => false });
+    await m2.connect(dev.bleId);
+    transport.connectionFor(dev)?.drop();
+    await waitFor(() => m2.snapshot.state === 'disconnected');
+    expect(m2.snapshot.reconnectAttempt).toBe(0);
+    expect(m2.snapshot.lastError?.code).toBe('disconnected');
+    m2.dispose();
+  });
+
   it('user disconnect does not reconnect', async () => {
     await mgr.connect(dev.bleId);
     await mgr.disconnect();
