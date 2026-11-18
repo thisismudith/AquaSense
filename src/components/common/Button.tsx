@@ -16,16 +16,18 @@ export interface ButtonProps {
   loading?: boolean;
   disabled?: boolean;
   compact?: boolean;
+  /** Rendered on a dark/teal surface (hero, welcome): ghost text turns white. */
+  onDark?: boolean;
   style?: StyleProp<ViewStyle>;
   testID?: string;
   accessibilityHint?: string;
 }
 
-export function Button({ label, onPress, variant = 'primary', icon, loading, disabled, compact, style, testID, accessibilityHint }: ButtonProps) {
+export function Button({ label, onPress, variant = 'primary', icon, loading, disabled, compact, onDark, style, testID, accessibilityHint }: ButtonProps) {
   const t = useTheme();
   const inactive = disabled || loading;
   const bg = { primary: t.colors.primary, secondary: t.colors.surfaceStrong, ghost: 'transparent', danger: t.colors.danger }[variant];
-  const fg = variant === 'primary' || variant === 'danger' ? t.colors.textOnPrimary : t.colors.primary;
+  const fg = variant === 'primary' || variant === 'danger' ? t.colors.textOnPrimary : onDark && variant === 'ghost' ? '#FFFFFF' : t.colors.primary;
   return (
     <Pressable
       testID={testID}
@@ -38,7 +40,7 @@ export function Button({ label, onPress, variant = 'primary', icon, loading, dis
       style={({ pressed }) => [
         styles.base,
         { backgroundColor: bg, borderRadius: t.radii.pill, paddingVertical: compact ? 8 : 14, opacity: inactive ? 0.5 : pressed ? 0.85 : 1 },
-        variant === 'ghost' && { borderWidth: 1, borderColor: t.colors.border },
+        variant === 'ghost' && { borderWidth: 1, borderColor: onDark ? 'rgba(255,255,255,0.5)' : t.colors.border },
         style,
       ]}
     >

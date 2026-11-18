@@ -1,0 +1,28 @@
+appId: com.aquasense.analyser
+---
+- clearState
+- launchApp
+- assertVisible: "Lab-grade tests in the field"
+- tapOn: "Next"
+- tapOn: "Next"
+- tapOn: "Pair later"
+- assertVisible: "Start a new test"
+- tapOn: "History"
+- assertVisible: "No results yet"
+- tapOn: "Reagents"
+- assertVisible: "No reagents recorded"
+- tapOn: "More"
+- tapOn: "Theme"
+- tapOn: "Dark"
+- back
+- tapOn: "Home"
+- tapOn: "Start a new test"
+- tapOn: "Nitrite"
+- tapOn:
+    id: "sample-name"
+- inputText: "Maestro sample"
+- tapOn: "Continue"
+- assertVisible: "No photo yet.*"
+- stopApp
+- launchApp
+- assertVisible: "Start a new test"   # onboarding persisted across restart

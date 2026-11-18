@@ -22,7 +22,7 @@ export function ParameterBadge({ parameter, size = 40 }: { parameter: ParameterI
   const color = useParameterColor(parameter);
   return (
     <View style={[styles.badge, { width: size, height: size, borderRadius: size / 2, backgroundColor: `${color}22`, borderColor: color }]} accessibilityElementsHidden>
-      <AppText variant="label" style={{ color, fontSize: size / 3.4 }}>
+      <AppText variant="label" numberOfLines={1} adjustsFontSizeToFit style={{ color, fontSize: PARAMETERS[parameter].shortLabel.length > 4 ? size / 4.4 : size / 3.4 }}>
         {PARAMETERS[parameter].shortLabel}
       </AppText>
     </View>

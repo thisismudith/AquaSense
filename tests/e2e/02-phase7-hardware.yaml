@@ -1,0 +1,45 @@
+appId: com.aquasense.analyser
+# Requires: ESP32-A powered and in range, Bluetooth on, reagent batch + calibration available.
+---
+- launchApp
+- tapOn: "Start a new test"
+- tapOn: "Nitrite"
+- tapOn:
+    id: "sample-name"
+- inputText: "E2E hardware sample"
+- tapOn: "Continue"
+- tapOn: "Continue"                 # photo optional
+- tapOn: "Capture location"
+- runFlow:
+    when:
+      visible: "While using the app"
+    commands:
+      - tapOn: "While using the app"
+- tapOn: "Continue"
+- tapOn:
+    id: "safety-ack"
+- tapOn: "Continue"
+- tapOn:
+    id: "reagent-continue"
+- tapOn: "Start timer"
+- runFlow:
+    when:
+      visible: "Allow"
+    commands:
+      - tapOn: "Allow"
+- tapOn: "Skip to measurement"
+- runFlow:
+    when:
+      visible: "Connect analyser"
+    commands:
+      - tapOn: "Connect analyser"
+      - tapOn: "Search for analyser"
+      - tapOn:
+          text: "AquaSense.*"
+      - back
+- tapOn: "Start measurement"
+- extendedWaitUntil:
+    visible: "Measurement complete"
+    timeout: 150000
+- tapOn: "View full result"
+- assertVisible: "Photometer vs camera"

@@ -2,6 +2,7 @@ import { Redirect } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 
 import { AppText } from '@/components/common/AppText';
 import { DropletLogo, Ripples } from '@/components/common/Brand';
@@ -35,6 +36,7 @@ export default function Splash() {
 
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: theme.colors.heroFrom }]} testID="splash">
+      <StatusBar style="light" />
       <View style={styles.ripples} pointerEvents="none">
         <Ripples size={520} opacity={0.1} />
       </View>

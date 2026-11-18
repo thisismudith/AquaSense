@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
 
 import { AppText } from '@/components/common/AppText';
 import { DropletLogo, Ripples } from '@/components/common/Brand';
@@ -32,6 +33,7 @@ export default function Welcome() {
 
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: theme.colors.heroFrom }]} testID="welcome">
+      <StatusBar style="light" />
       <View style={styles.ripples} pointerEvents="none">
         <Ripples size={460} opacity={0.1} />
       </View>
@@ -60,13 +62,13 @@ export default function Welcome() {
       <View style={styles.actions}>
         {last ? (
           <>
-            <Button label="Get started — pair analyser" icon="bluetooth" onPress={() => void finish(true)} testID="welcome-pair" />
-            <Button label="Pair later" variant="ghost" onPress={() => void finish(false)} style={styles.ghost} testID="welcome-later" />
+            <Button label="Get started — pair analyser" icon="bluetooth" variant="secondary" onPress={() => void finish(true)} testID="welcome-pair" />
+            <Button label="Pair later" variant="ghost" onDark onPress={() => void finish(false)} testID="welcome-later" />
           </>
         ) : (
           <>
-            <Button label="Next" onPress={() => setPage(page + 1)} testID="welcome-next" />
-            <Button label="Skip" variant="ghost" onPress={() => setPage(PAGES.length - 1)} style={styles.ghost} />
+            <Button label="Next" variant="secondary" onPress={() => setPage(page + 1)} testID="welcome-next" />
+            <Button label="Skip" variant="ghost" onDark onPress={() => setPage(PAGES.length - 1)} />
           </>
         )}
       </View>
@@ -84,5 +86,4 @@ const styles = StyleSheet.create({
   dots: { flexDirection: 'row', gap: 6, marginTop: 8 },
   dot: { height: 8, borderRadius: 4 },
   actions: { gap: 10 },
-  ghost: { borderColor: 'rgba(255,255,255,0.5)' },
 });
