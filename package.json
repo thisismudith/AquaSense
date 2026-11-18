@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "expo lint",
     "test": "jest",
-    "test:ci": "jest --ci"
+    "test:ci": "jest --ci",
+    "verify": "tsc --noEmit && expo lint && jest --ci"
   },
   "dependencies": {
     "expo": "~54.0.36",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "29.5.14",
+    "@types/node": "26.6.6",
     "@types/react": "~19.1.0",
     "eslint": "^9.39.5",
     "eslint-config-expo": "~10.0.0",
