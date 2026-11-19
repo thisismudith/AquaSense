@@ -1,5 +1,6 @@
 /** Guided test workflow screens (UI + MOCK-BLE + mocked camera/location/notification modules). */
 import { act, fireEvent, screen, waitFor } from '@testing-library/react-native';
+import { Vibration } from 'react-native';
 
 import Complete from '@/app/test/complete';
 import LocationStep from '@/app/test/location';
@@ -30,6 +31,10 @@ jest.mock('expo-location', () => ({
   getCurrentPositionAsync: jest.fn(),
   Accuracy: { High: 4 },
 }));
+jest.mock('expo-keep-awake', () => ({
+  activateKeepAwakeAsync: jest.fn(async () => undefined),
+  deactivateKeepAwake: jest.fn(async () => undefined),
+}));
 jest.mock('expo-notifications', () => ({
   getPermissionsAsync: jest.fn(async () => ({ granted: true, canAskAgain: true, status: 'granted' })),
   requestPermissionsAsync: jest.fn(),
@@ -37,6 +42,8 @@ jest.mock('expo-notifications', () => ({
   SchedulableTriggerInputTypes: { DATE: 'date' },
 }));
 
+// eslint-disable-next-line import/first
+import * as KeepAwake from 'expo-keep-awake';
 // eslint-disable-next-line import/first
 import * as ImagePicker from 'expo-image-picker';
 // eslint-disable-next-line import/first
@@ -191,6 +198,23 @@ describe('Screen 15 — timer', () => {
     await act(async () => fireEvent.press(screen.getByTestId('timer-cancel')));
     expect(app.notifications.cancelScheduledNotificationAsync).toHaveBeenCalledWith('notif-1');
     expect(await app.services.repos.timers.list()).toEqual([]);
+  });
+
+  it('keeps the screen on while counting down, then vibrates and releases it at zero', async () => {
+    const vibrate = jest.spyOn(Vibration, 'vibrate').mockImplementation(() => undefined);
+    const s = await app.services.repos.samples.create({ sampleName: 'Pb', sourceType: 'tap', notes: null, photoPath: null, location: null });
+    useTestFlow.getState().start('lead');
+    useTestFlow.getState().patch({ sampleId: s.sampleId });
+    renderScreen(<TimerStep />);
+    fireEvent.changeText(screen.getByTestId('timer-manual'), '0.02'); // 1 s
+    await act(async () => fireEvent.press(screen.getByTestId('timer-start')));
+    expect(KeepAwake.activateKeepAwakeAsync).toHaveBeenCalledWith('reaction-timer');
+    expect(vibrate).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByText('Reaction complete')).toBeTruthy(), { timeout: 4000 });
+    expect(KeepAwake.deactivateKeepAwake).toHaveBeenCalledWith('reaction-timer');
+    expect(vibrate).toHaveBeenCalledTimes(1);
+    expect(useTestFlow.getState().timerDone).toBe(true);
+    vibrate.mockRestore();
   });
 
   it('lead requires a manual reaction time', async () => {

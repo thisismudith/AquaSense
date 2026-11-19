@@ -1,6 +1,7 @@
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import { router } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
-import { AppState, StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState, StyleSheet, Vibration, View } from 'react-native';
 
 import { ProgressRing } from '@/components/charts/ProgressRing';
 import { AppText } from '@/components/common/AppText';
@@ -18,6 +19,10 @@ import { formatClock, remainingSeconds, type StartedTimer } from '@/services/not
 import { useAppStore, useServices } from '@/store/appStore';
 import { useTestFlow } from '@/store/testFlowStore';
 import type { ActiveTimer } from '@/types/domain';
+
+const KEEP_AWAKE_TAG = 'reaction-timer';
+/** In-app completion buzz (ms: wait, on, off, on). */
+const DONE_VIBRATION = [0, 600, 300, 600];
 
 function TimerBody({ parameter, sampleId }: { parameter: ParameterId; sampleId: string }) {
   const { timers } = useServices();
@@ -54,9 +59,28 @@ function TimerBody({ parameter, sampleId }: { parameter: ParameterId; sampleId: 
   const remaining = active ? remainingSeconds(active, now) : duration ?? 0;
   const done = !!active && remaining === 0;
 
+  // Some phones (observed: OnePlus / ColorOS) deliver the scheduled alert minutes late while the screen is off,
+  // even with exact-alarm permission. Keeping the screen on while the countdown runs keeps the in-app alert on time.
   useEffect(() => {
-    if (done) patch({ timerDone: true });
-  }, [done, patch]);
+    if (!active || done) return;
+    activateKeepAwakeAsync(KEEP_AWAKE_TAG).catch(() => undefined);
+    return () => {
+      deactivateKeepAwake(KEEP_AWAKE_TAG).catch(() => undefined);
+    };
+  }, [active, done]);
+
+  // Buzz only when this screen saw the countdown reach zero, not when reopening an already finished timer.
+  const sawRunning = useRef(false);
+  useEffect(() => {
+    if (active && !done) sawRunning.current = true;
+  }, [active, done]);
+
+  useEffect(() => {
+    if (!done) return;
+    patch({ timerDone: true });
+    if (sawRunning.current && prefs.vibration) Vibration.vibrate(DONE_VIBRATION);
+    sawRunning.current = false;
+  }, [done, patch, prefs.vibration]);
 
   const start = async () => {
     setError(null);
@@ -101,7 +125,7 @@ function TimerBody({ parameter, sampleId }: { parameter: ParameterId; sampleId: 
       {notice === 'denied' || notice === 'blocked' ? (
         <PermissionNotice kind="notifications" outcome={notice} onRequest={() => void start()} />
       ) : notice === 'scheduled' ? (
-        <Banner tone="success" message="You will be notified when the reaction is complete, even if the screen is off." testID="timer-scheduled" />
+        <Banner tone="success" message="The screen stays on while the timer runs. You will also get a notification when the reaction is complete." testID="timer-scheduled" />
       ) : notice === 'failed' ? (
         <Banner
           tone="warning"

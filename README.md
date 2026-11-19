@@ -42,7 +42,7 @@ Everything stays **on the phone**. There is no account, no server and no interne
 | Problem in the field | How AquaSense helps |
 |---|---|
 | Paper logs get lost and are hard to audit | Each result is saved with sample ID, time, GPS, photo, reagent batch and calibration version |
-| Steps get skipped or timed by guesswork | An 8-step guided wizard with a reaction timer that alerts even when the screen is off |
+| Steps get skipped or timed by guesswork | An 8-step guided wizard with a reaction timer that keeps the screen on and alerts when the reaction is complete |
 | No signal at remote sites | Fully offline. Data syncs from the analyser over Bluetooth, not the internet |
 | Reagents expire or run out mid-survey | Stock is deducted per test, with low-stock and expiry warnings |
 | Results need to reach a lab or authority | One-tap PDF / CSV reports through the Android share sheet |
@@ -57,7 +57,7 @@ Everything stays **on the phone**. There is no account, no server and no interne
 | 📈 | **History & analytics** | Search and filter, per-sample history, trend charts |
 | 🎯 | **Calibration** | Multi-point linear fit, versioning, rollback, push to the analyser |
 | 🧴 | **Reagent inventory** | Batches, units (mL, drops, pillows, tablets…), expiry date picker, stock alerts |
-| ⏱️ | **Reaction timer** | OS-scheduled notification, survives app close and restart |
+| ⏱️ | **Reaction timer** | Screen stays on and the phone vibrates at zero; OS-scheduled notification as backup, survives app close and restart |
 | 📄 | **Reports** | PDF and CSV export |
 | 💾 | **Backup** | Full backup and restore of data and photos in one file |
 | 🔒 | **Privacy** | Permissions are asked only when a feature needs them. No background location |
