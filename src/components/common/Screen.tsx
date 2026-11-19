@@ -1,12 +1,35 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import type { ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, RefreshControl, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Keyboard, Pressable, RefreshControl, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/theme/ThemeProvider';
 
 import { AppText } from './AppText';
+
+/** Extra space kept between the keyboard and the content, so a focused field and its hint/error stay visible. */
+const KEYBOARD_GAP = 40;
+
+/**
+ * Space the open keyboard takes over the content area (0 when closed). Used instead of KeyboardAvoidingView:
+ * with Android edge-to-edge (Android 15+) the window is not resized for the keyboard, and KeyboardAvoidingView
+ * left stale bottom padding after the keyboard closed.
+ */
+function useKeyboardInset(): number {
+  const insets = useSafeAreaInsets();
+  const [height, setHeight] = useState(0);
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', (e) => setHeight(e.endCoordinates.height));
+    const hide = Keyboard.addListener('keyboardDidHide', () => setHeight(0));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+  // SafeAreaView already pads the bottom system bar, which the keyboard covers too.
+  return height > 0 ? Math.max(0, height - insets.bottom) + KEYBOARD_GAP : 0;
+}
 
 export function Screen({
   children,
@@ -34,6 +57,7 @@ export function Screen({
   footer?: ReactNode;
 }) {
   const t = useTheme();
+  const keyboard = useKeyboardInset();
   const pad = padded ? { padding: t.spacing.lg, gap: t.spacing.lg } : null;
   return (
     <SafeAreaView testID={testID} style={[styles.root, { backgroundColor: t.colors.background }]} edges={['top', 'left', 'right', 'bottom']}>
@@ -56,7 +80,7 @@ export function Screen({
           <View>{right}</View>
         </View>
       )}
-      <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <View style={[styles.root, { paddingBottom: keyboard }]}>
         {scroll ? (
           <ScrollView
             contentContainerStyle={[pad, contentStyle]}
@@ -69,7 +93,7 @@ export function Screen({
           <View style={[styles.root, pad, contentStyle]}>{children}</View>
         )}
         {footer ? <View style={{ padding: t.spacing.lg, paddingTop: t.spacing.sm, gap: t.spacing.sm }}>{footer}</View> : null}
-      </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }

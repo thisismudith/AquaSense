@@ -25,6 +25,17 @@ import { router, setParams } from '../helpers/routerMock';
 
 jest.mock('expo-router', () => jest.requireActual('../helpers/routerMock').routerModule);
 jest.mock('@/services/permissions/permissions', () => ({ openAppSettings: jest.fn(), requestBluetooth: jest.fn() }));
+// Native calendar: the test "picks" 31 Jan 2027 whenever the picker is opened.
+jest.mock('@react-native-community/datetimepicker', () => ({
+  __esModule: true,
+  default: function PickerMock({ onChange }: { onChange: (e: { type: string }, d?: Date) => void }) {
+    jest.requireActual<typeof import('react')>('react').useEffect(() => onChange({ type: 'set' }, new Date(2027, 0, 31)), [onChange]);
+    return null;
+  },
+  DateTimePickerAndroid: {
+    open: jest.fn((o: { onChange: (e: { type: string }, d?: Date) => void }) => o.onChange({ type: 'set' }, new Date(2027, 0, 31))),
+  },
+}));
 
 let app: TestApp;
 beforeEach(async () => {
@@ -75,12 +86,16 @@ describe('reagent screens 31–34', () => {
     renderScreen(<NewReagent />);
     fireEvent.changeText(screen.getByTestId('rf-qty'), '');
     await act(async () => fireEvent.press(screen.getByTestId('rf-submit')));
-    expect(screen.getByText('Use YYYY-MM-DD')).toBeTruthy();
+    expect(screen.getByText('Choose the expiry date')).toBeTruthy();
     fireEvent.changeText(screen.getByTestId('rf-qty'), '20');
-    fireEvent.changeText(screen.getByTestId('rf-expiry'), '2027-01-31');
+    fireEvent.press(screen.getByTestId('rf-unit'));
+    fireEvent.press(screen.getByTestId('rf-unit-opt-pillows'));
+    expect(screen.getByText('In pillows, from your kit instructions')).toBeTruthy();
+    fireEvent.press(screen.getByTestId('rf-expiry'));
+    expect(screen.getByTestId('rf-expiry')).toHaveTextContent(/2027/);
     await act(async () => fireEvent.press(screen.getByTestId('rf-submit')));
     await waitFor(() => expect(router.back).toHaveBeenCalled());
-    expect((await app.services.repos.reagents.list())[0]).toMatchObject({ quantityRemaining: 20, testsRemaining: 20 });
+    expect((await app.services.repos.reagents.list())[0]).toMatchObject({ quantityRemaining: 20, testsRemaining: 20, quantityUnit: 'pillows', expiryDate: '2027-01-31' });
   });
 
   it('32/33: details, restock, prevent negative stock', async () => {

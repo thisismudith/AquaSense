@@ -41,24 +41,37 @@ function Body({ parameter }: { parameter: ParameterId }) {
     { c: '', a: '' },
     { c: '', a: '' },
   ]);
-  const [msg, setMsg] = useState<{ tone: 'success' | 'danger' | 'warning'; text: string } | null>(null);
+  const [msg, setMsg] = useState<{
+    tone: 'success' | 'danger' | 'warning';
+    text: string;
+  } | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const { points, invalidRows } = parseStandards(rows);
   const preview = calibration.preview(points);
   const connected = snap?.state === 'connected';
   const deviceCal = snap?.deviceStatus?.calibrations[parameter];
 
+  // Flag a cell only when it holds something that is not a number; a half-filled row is just in progress.
+  const badNumber = (v: string) => v.trim() !== '' && !Number.isFinite(Number(v.replace(',', '.')));
+
   const setCell = (i: number, k: keyof Row, v: string) => setRows(rows.map((r, j) => (j === i ? { ...r, [k]: v } : r)));
 
   const save = async () => {
-    if (invalidRows.length) return setMsg({ tone: 'danger', text: `Fix row(s) ${invalidRows.map((i) => i + 1).join(', ')}.` });
+    if (invalidRows.length)
+      return setMsg({
+        tone: 'danger',
+        text: `Fix row(s) ${invalidRows.map((i) => i + 1).join(', ')}.`,
+      });
     setBusy('save');
     try {
       const r = await calibration.create(parameter, points, true);
       if (!r.ok) return setMsg({ tone: 'danger', text: FIT_ERR[r.error] ?? r.error });
       touch();
       history.reload();
-      setMsg({ tone: 'success', text: `Saved as v${r.value.calibrationVersion}${connected ? '. Send it to the analyser to use it for measurements.' : '. Connect the analyser to send it.'}` });
+      setMsg({
+        tone: 'success',
+        text: `Saved as v${r.value.calibrationVersion}${connected ? '. Send it to the analyser to use it for measurements.' : '. Connect the analyser to send it.'}`,
+      });
     } finally {
       setBusy(null);
     }
@@ -74,7 +87,10 @@ function Body({ parameter }: { parameter: ParameterId }) {
       await manager.refreshStatus().catch(() => undefined);
       touch();
       history.reload();
-      setMsg({ tone: 'success', text: `v${cal.calibrationVersion} sent to the analyser.` });
+      setMsg({
+        tone: 'success',
+        text: `v${cal.calibrationVersion} sent to the analyser.`,
+      });
     } catch (e) {
       setMsg({ tone: 'danger', text: bleErrorMessage(e) });
     } finally {
@@ -96,19 +112,29 @@ function Body({ parameter }: { parameter: ParameterId }) {
         <AppText variant="caption" color="muted">
           Concentration of each standard ({PARAMETERS[parameter].unit}) and its absorbance measured on the analyser. Fitted as A = m·C + c.
         </AppText>
-        {rows.map((r, i) => (
-          <View key={i} style={styles.row}>
-            <View style={styles.flex}>
-              <TextField label={`C${i + 1}`} keyboardType="decimal-pad" value={r.c} onChangeText={(v) => setCell(i, 'c', v)} error={invalidRows.includes(i) ? 'Invalid' : null} testID={`std-c-${i}`} />
+        <View style={styles.rows}>
+          {rows.map((r, i) => (
+            <View key={i} style={styles.row}>
+              <View style={styles.flex}>
+                <TextField label={`C${i + 1}`} keyboardType="decimal-pad" value={r.c} onChangeText={(v) => setCell(i, 'c', v)} error={badNumber(r.c) ? 'Enter a number' : null} testID={`std-c-${i}`} />
+              </View>
+              <View style={styles.flex}>
+                <TextField
+                  label={`A${i + 1}`}
+                  keyboardType="decimal-pad"
+                  value={r.a}
+                  onChangeText={(v) => setCell(i, 'a', v)}
+                  error={badNumber(r.a) ? 'Enter a number' : null}
+                  allowNegative
+                  testID={`std-a-${i}`}
+                />
+              </View>
+              <Pressable accessibilityRole="button" accessibilityLabel={`Remove row ${i + 1}`} onPress={() => setRows(rows.filter((_, j) => j !== i))} style={styles.del} disabled={rows.length <= 2}>
+                <Ionicons name="close-circle-outline" size={22} color={rows.length <= 2 ? theme.colors.border : theme.colors.textMuted} />
+              </Pressable>
             </View>
-            <View style={styles.flex}>
-              <TextField label={`A${i + 1}`} keyboardType="decimal-pad" value={r.a} onChangeText={(v) => setCell(i, 'a', v)} testID={`std-a-${i}`} />
-            </View>
-            <Pressable accessibilityRole="button" accessibilityLabel={`Remove row ${i + 1}`} onPress={() => setRows(rows.filter((_, j) => j !== i))} style={styles.del} disabled={rows.length <= 2}>
-              <Ionicons name="close-circle-outline" size={22} color={rows.length <= 2 ? theme.colors.border : theme.colors.textMuted} />
-            </Pressable>
-          </View>
-        ))}
+          ))}
+        </View>
         <Button compact variant="ghost" label="Add standard" icon="add" onPress={() => setRows([...rows, { c: '', a: '' }])} testID="std-add" />
       </Card>
 
@@ -116,7 +142,13 @@ function Body({ parameter }: { parameter: ParameterId }) {
         <AppText variant="title">Fit</AppText>
         {preview.ok ? (
           <>
-            <LineChart points={points.map((p) => ({ x: p.concentration, y: p.absorbance }))} height={140} />
+            <LineChart
+              points={points.map((p) => ({
+                x: p.concentration,
+                y: p.absorbance,
+              }))}
+              height={140}
+            />
             <ListRow title="Slope m" value={formatNumber(preview.value.slope, 5)} testID="fit-slope" />
             <ListRow title="Intercept c" value={formatNumber(preview.value.intercept, 5)} testID="fit-intercept" />
             <ListRow title="R²" value={formatNumber(preview.value.rSquared, 5)} testID="fit-r2" />
@@ -151,8 +183,18 @@ function Body({ parameter }: { parameter: ParameterId }) {
                 right={<StatusPill tone={c.calibrationStatus === 'active' ? 'success' : 'neutral'} label={c.calibrationStatus} />}
               />
               <View style={styles.actions}>
-                {c.calibrationStatus !== 'active' ? <Button compact variant="ghost" label="Make active" onPress={() => void activate(c.calibrationId)} testID={`cal-activate-${c.calibrationVersion}`} /> : null}
-                <Button compact variant="secondary" label={c.sentToDeviceAt ? 'Re-send' : 'Send to analyser'} disabled={!connected} loading={busy === `send-${c.calibrationId}`} onPress={() => void send(c.calibrationId)} testID={`cal-send-${c.calibrationVersion}`} />
+                {c.calibrationStatus !== 'active' ? (
+                  <Button compact variant="ghost" label="Make active" onPress={() => void activate(c.calibrationId)} testID={`cal-activate-${c.calibrationVersion}`} />
+                ) : null}
+                <Button
+                  compact
+                  variant="secondary"
+                  label={c.sentToDeviceAt ? 'Re-send' : 'Send to analyser'}
+                  disabled={!connected}
+                  loading={busy === `send-${c.calibrationId}`}
+                  onPress={() => void send(c.calibrationId)}
+                  testID={`cal-send-${c.calibrationVersion}`}
+                />
               </View>
             </View>
           ))
@@ -177,8 +219,14 @@ export default function CalibrationDetail() {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', gap: 8, alignItems: 'flex-end' },
+  rows: { gap: 14, marginTop: 12, marginBottom: 12 },
+  row: { flexDirection: 'row', gap: 8, alignItems: 'flex-start' },
   flex: { flex: 1 },
-  del: { paddingBottom: 12 },
-  actions: { flexDirection: 'row', gap: 8, justifyContent: 'flex-end', paddingBottom: 8 },
+  del: { paddingTop: 38 },
+  actions: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'flex-end',
+    paddingBottom: 8,
+  },
 });

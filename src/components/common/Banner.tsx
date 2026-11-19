@@ -7,7 +7,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 import { AppText } from './AppText';
 import type { Tone } from './Pills';
 
-const ICON = { success: 'checkmark-circle', warning: 'warning', danger: 'alert-circle', info: 'information-circle', neutral: 'ellipse' } as const;
+const ICON = { success: 'checkmark-circle', warning: 'warning', danger: 'alert-circle', info: 'information-circle', neutral: 'information-circle-outline' } as const;
 
 export function Banner({ tone, title, message, children, testID }: { tone: Tone; title?: string; message?: string; children?: ReactNode; testID?: string }) {
   const t = useTheme();

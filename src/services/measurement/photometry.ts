@@ -1,5 +1,5 @@
 /**
- * Photometer maths exactly as specified (AquaSense.md §4). ESP32-A computes the primary result;
+ * Photometer maths exactly as specified (SPECIFICATION.md §4). ESP32-A computes the primary result;
  * these functions exist to VALIDATE received data and to RECALCULATE historically from stored raw values.
  * Invalid inputs yield a typed error — never a fabricated number.
  */

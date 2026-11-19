@@ -182,6 +182,9 @@ describe('Screen 15 — timer', () => {
     await waitFor(() => expect(screen.getByTestId('timer-scheduled')).toBeTruthy());
     expect(app.notifications.scheduleNotificationAsync).toHaveBeenCalledTimes(1);
     expect(await app.services.repos.timers.list()).toHaveLength(1);
+    // The countdown must be running immediately after start (not only after a remount).
+    expect(screen.getByTestId('timer-cancel')).toBeTruthy();
+    expect(screen.queryByTestId('timer-start')).toBeNull();
     r.unmount();
     renderScreen(<TimerStep />); // simulated restart of the screen
     await waitFor(() => expect(screen.getByTestId('timer-cancel')).toBeTruthy());

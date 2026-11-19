@@ -49,7 +49,7 @@ export default function Reports() {
       </View>
       <Pressable accessibilityRole="checkbox" accessibilityState={{ checked: includeRaw }} onPress={() => setIncludeRaw(!includeRaw)} style={styles.check} testID="rp-raw">
         <Ionicons name={includeRaw ? 'checkbox' : 'square-outline'} size={22} color={theme.colors.primary} />
-        <AppText>Include raw readings, calibration and device metadata in the PDF</AppText>
+        <AppText style={{ flex: 1 }}>Include raw readings, calibration and device metadata in the PDF</AppText>
       </Pressable>
       <Card>
         <AppText variant="title" testID="rp-count">

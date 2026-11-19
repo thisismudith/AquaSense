@@ -227,7 +227,7 @@ class MockConnection implements BleConnection {
         stages.forEach((stage, i) =>
           setTimeout(() => this.transport.broadcast(d, { type: 'progress', stage }), ((i + 1) * d.measurementMs) / (stages.length + 1)),
         );
-        // Measurement runs on the device regardless of the phone link (master prompt §7).
+        // Measurement runs on the device regardless of the phone link (specification §7).
         setTimeout(() => {
           const r = d.simulate(parameter);
           d.busy = false;

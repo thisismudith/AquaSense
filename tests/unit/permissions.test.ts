@@ -49,6 +49,20 @@ describe('Bluetooth permissions by API level (UNIT)', () => {
     expect(await requestBluetooth(30, fakePA({ [`next:${PERMISSIONS.ACCESS_FINE_LOCATION}`]: 'never_ask_again' }))).toBe('blocked');
   });
 
+  it('dialog result never arrives but permission was granted → still resolves granted (polling)', async () => {
+    let granted = false;
+    const pa = {
+      RESULTS,
+      PERMISSIONS,
+      check: jest.fn(async () => granted),
+      requestMultiple: jest.fn(() => {
+        granted = true; // user tapped Allow, but the JS promise never settles
+        return new Promise(() => undefined);
+      }),
+    };
+    expect(await requestBluetooth(33, pa as never)).toBe('granted');
+  });
+
   it('combineResults precedence', () => {
     expect(combineResults(['granted', 'never_ask_again', 'denied'], fakePA({}))).toBe('blocked');
     expect(combineResults([], fakePA({}))).toBe('granted');

@@ -57,7 +57,7 @@ export class CalibrationService {
 
   /**
    * Historical recalculation from stored raw readings with a chosen calibration.
-   * Pure: the stored result is never modified (master prompt §6).
+   * Pure: the stored result is never modified (specification §6).
    */
   static recalculate(result: TestResult, cal: Calibration): Result<Recalculation, RecalcError> {
     if (result.parameter !== cal.parameter) return { ok: false, error: 'parameter_mismatch' };

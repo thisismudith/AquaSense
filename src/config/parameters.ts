@@ -1,5 +1,5 @@
 /**
- * Test parameters — WORKING VALUES from AquaSense.md §10 / feature list PDF.
+ * Test parameters — WORKING VALUES from SPECIFICATION.md §10 / feature list PDF.
  * They stay configurable until lab calibration confirms them. Lead range and reaction time are
  * intentionally `null` ("pending calibration") — never invent them.
  */

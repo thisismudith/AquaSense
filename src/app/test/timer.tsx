@@ -29,6 +29,7 @@ function TimerBody({ parameter, sampleId }: { parameter: ParameterId; sampleId: 
   const [active, setActive] = useState<ActiveTimer | null>(null);
   const [now, setNow] = useState(Date.now());
   const [notice, setNotice] = useState<StartedTimer['notification'] | null>(null);
+  const [noticeError, setNoticeError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // Restart recovery: pick up a persisted timer for this parameter/sample.
@@ -65,6 +66,7 @@ function TimerBody({ parameter, sampleId }: { parameter: ParameterId; sampleId: 
       const r = await timers.start({ parameter, sampleId, durationS: d, alerts: prefs.timerAlerts, vibrate: prefs.vibration });
       setActive(r.timer);
       setNotice(r.notification);
+      setNoticeError(r.notificationError ?? null);
       setNow(Date.now());
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -100,6 +102,13 @@ function TimerBody({ parameter, sampleId }: { parameter: ParameterId; sampleId: 
         <PermissionNotice kind="notifications" outcome={notice} onRequest={() => void start()} />
       ) : notice === 'scheduled' ? (
         <Banner tone="success" message="You will be notified when the reaction is complete, even if the screen is off." testID="timer-scheduled" />
+      ) : notice === 'failed' ? (
+        <Banner
+          tone="warning"
+          title="Alert not scheduled"
+          message={`The phone did not accept the reaction alert (${noticeError ?? 'unknown error'}). The countdown still runs — keep this screen open.`}
+          testID="timer-alert-failed"
+        />
       ) : null}
       {error ? <Banner tone="danger" message={error} testID="timer-error" /> : null}
       <View style={styles.center}>

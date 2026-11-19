@@ -5,7 +5,7 @@ import type { ParameterId } from './parameters';
  *
  * The feature list asks for short handling/disposal notes with extra care for hexavalent chromium and acidic
  * reagents, but supplies no text. Chemical safety instructions must come from the reagent SDS / the responsible
- * lab and must not be invented (master prompt §9 A9, DECISIONS U3). Until verified text is added here with
+ * lab and must not be invented (specification §9 A9, DECISIONS U3). Until verified text is added here with
  * `verified: true` and a source, the app shows only a pointer to the SDS and the lab's procedure.
  */
 export interface SafetyContent {

@@ -40,7 +40,7 @@ export default function Settings() {
       <Card>
         <ListRow icon="language-outline" title="Language" value={LANGUAGES[settings.language].label} onPress={go('/settings/language')} testID="set-language" />
         <Divider />
-        <ListRow icon="contrast-outline" title="Theme" value={settings.theme} onPress={go('/settings/theme')} testID="set-theme" />
+        <ListRow icon="contrast-outline" title="Theme" value={settings.theme.charAt(0).toUpperCase() + settings.theme.slice(1)} onPress={go('/settings/theme')} testID="set-theme" />
         <Divider />
         <ListRow
           icon="notifications-outline"

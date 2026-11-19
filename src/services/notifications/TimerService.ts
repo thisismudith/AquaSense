@@ -28,7 +28,29 @@ export interface NotificationsApi {
 
 export interface StartedTimer {
   timer: ActiveTimer;
-  notification: 'scheduled' | 'disabled' | PermissionOutcome;
+  /** 'failed' = the OS alert could not be scheduled; the countdown still runs in the app. */
+  notification: 'scheduled' | 'disabled' | 'failed' | PermissionOutcome;
+  notificationError?: string;
+}
+
+/** Native notification calls have been observed never to settle on some devices; never let that block the timer. */
+export const NOTIFICATION_STEP_TIMEOUT_MS = 8000;
+export const NOTIFICATION_PERMISSION_TIMEOUT_MS = 120000; // the user may be reading the system dialog
+
+function withTimeout<T>(p: Promise<T>, ms: number, step: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const id = setTimeout(() => reject(new Error(`${step} did not respond`)), ms);
+    p.then(
+      (v) => {
+        clearTimeout(id);
+        resolve(v);
+      },
+      (e: unknown) => {
+        clearTimeout(id);
+        reject(e instanceof Error ? e : new Error(String(e)));
+      },
+    );
+  });
 }
 
 /**
@@ -71,23 +93,33 @@ export class TimerService {
       notificationId: null,
     };
     let notification: StartedTimer['notification'] = 'disabled';
+    let notificationError: string | undefined;
     if (opts.alerts) {
-      const perm = await this.requestPermission();
-      if (perm === 'granted') {
-        await this.ensureChannel(opts.vibrate);
-        timer.notificationId = await this.api.scheduleNotificationAsync({
-          content: {
-            title: 'Reaction complete',
-            body: `${PARAMETERS[opts.parameter].shortLabel}: the sample is ready to measure.`,
-            data: { timerId: timer.timerId, parameter: opts.parameter, sampleId: opts.sampleId },
-          },
-          trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: new Date(startedAtMs + opts.durationS * 1000), channelId: TIMER_CHANNEL_ID },
-        });
-        notification = 'scheduled';
-      } else notification = perm;
+      try {
+        const perm = await withTimeout(this.requestPermission(), NOTIFICATION_PERMISSION_TIMEOUT_MS, 'Notification permission');
+        if (perm === 'granted') {
+          await withTimeout(this.ensureChannel(opts.vibrate), NOTIFICATION_STEP_TIMEOUT_MS, 'Notification channel setup');
+          timer.notificationId = await withTimeout(
+            this.api.scheduleNotificationAsync({
+              content: {
+                title: 'Reaction complete',
+                body: `${PARAMETERS[opts.parameter].shortLabel}: the sample is ready to measure.`,
+                data: { timerId: timer.timerId, parameter: opts.parameter, sampleId: opts.sampleId },
+              },
+              trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date: new Date(startedAtMs + opts.durationS * 1000), channelId: TIMER_CHANNEL_ID },
+            }),
+            NOTIFICATION_STEP_TIMEOUT_MS,
+            'Scheduling the alert',
+          );
+          notification = 'scheduled';
+        } else notification = perm;
+      } catch (e) {
+        notification = 'failed';
+        notificationError = e instanceof Error ? e.message : String(e);
+      }
     }
     await this.repo.save(timer);
-    return { timer, notification };
+    return notificationError ? { timer, notification, notificationError } : { timer, notification };
   }
 
   async cancel(timer: ActiveTimer): Promise<void> {

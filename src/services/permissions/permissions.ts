@@ -4,7 +4,7 @@ import * as Notifications from 'expo-notifications';
 import { Linking, PermissionsAndroid, Platform, type Permission } from 'react-native';
 
 /**
- * Contextual runtime permissions (master prompt §8). Each is requested only when its feature is used:
+ * Contextual runtime permissions (specification §8). Each is requested only when its feature is used:
  * Bluetooth when pairing, camera when taking a photo, location when geotagging, notifications when
  * enabling timer alerts. Nothing is requested at onboarding. Background location is never requested.
  */
@@ -37,9 +37,27 @@ export async function requestBluetooth(apiLevel = Number(Platform.Version), pa: 
   if (Platform.OS !== 'android') return 'granted';
   if (await checkBluetooth(apiLevel, pa)) return 'granted';
   const perms = bluetoothPermissionsFor(apiLevel, pa);
-  const res = await pa.requestMultiple(perms);
-  return combineResults(perms.map((p) => res[p] ?? pa.RESULTS.DENIED), pa);
+  // Observed on a OnePlus / Android 16 phone: after "Allow" in the system dialog, the scan did not start
+  // until the user tapped Search again. Also poll the granted state so a delayed or lost dialog
+  // result cannot block the scan.
+  let stop = false;
+  const poll = new Promise<PermissionOutcome>((resolve) => {
+    const tick = async () => {
+      if (stop) return;
+      if (await checkBluetooth(apiLevel, pa).catch(() => false)) return resolve('granted');
+      setTimeout(() => void tick(), BLUETOOTH_PERMISSION_POLL_MS);
+    };
+    setTimeout(() => void tick(), BLUETOOTH_PERMISSION_POLL_MS);
+  });
+  const asked = pa.requestMultiple(perms).then((res) => combineResults(perms.map((p) => res[p] ?? pa.RESULTS.DENIED), pa));
+  try {
+    return await Promise.race([asked, poll]);
+  } finally {
+    stop = true;
+  }
 }
+
+export const BLUETOOTH_PERMISSION_POLL_MS = 500;
 
 /** Maps Expo's permission response (status + canAskAgain) to our outcome. */
 export function fromExpo(r: { status: string; canAskAgain: boolean; granted: boolean }): PermissionOutcome {
