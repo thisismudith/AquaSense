@@ -6,7 +6,7 @@ import { ParameterSchema, type NewTestResult } from '@/types/domain';
 import { parseCameraValidation } from '../measurement/cameraValidation';
 import { deriveQualityStatus } from '../measurement/quality';
 
-/** Device → phone message schemas. PROVISIONAL contract — see docs/BLE_PROTOCOL.md. */
+/** Device → phone message schemas. PROVISIONAL contract — see src/config/ble.ts. */
 const num = z.number().finite();
 const nullableNum = num.nullable().optional().transform((v) => v ?? null);
 

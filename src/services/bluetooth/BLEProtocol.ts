@@ -1,7 +1,7 @@
 import { BLE_PROTOCOL } from '@/config/ble';
 import type { ParameterId } from '@/config/parameters';
 
-/** Phone → device commands (PROVISIONAL contract, docs/BLE_PROTOCOL.md). */
+/** Phone → device commands (PROVISIONAL contract, see src/config/ble.ts). */
 export type DeviceCommand =
   | { cmd: 'hello' }
   | { cmd: 'set_time'; epoch_ms: number; tz_offset_min: number }

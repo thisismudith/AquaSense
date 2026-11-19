@@ -4,7 +4,7 @@
  * ⚠ PROVISIONAL — NOT FIRMWARE-CONFIRMED (DECISIONS D4/D10). No ESP32 firmware or BLE documentation was supplied.
  * The contract below uses the published Nordic UART Service (NUS) UUIDs, a de-facto standard serial-over-BLE
  * profile commonly used on ESP32, with newline-delimited JSON frames. It is a proposed contract for the firmware
- * team (see docs/BLE_PROTOCOL.md), NOT a description of existing firmware. Physical verification is pending.
+ * team, NOT a description of existing firmware. Physical verification is pending.
  */
 export const BLE_PROTOCOL = {
   status: 'provisional' as 'provisional' | 'confirmed',

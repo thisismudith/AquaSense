@@ -2,7 +2,7 @@
 /**
  * Phase 7 end-to-end flow at service level — MOCK-BLE + file-backed SQLite (node:sqlite) + in-memory files.
  * This is NOT a physical-device or physical-ESP32 test. It proves the app's layers work together; on-device
- * verification is tracked in docs/test-results/CP15-end-to-end-validation.md.
+ * verification is done separately on a real phone and analyser.
  */
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
