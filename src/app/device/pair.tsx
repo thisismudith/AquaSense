@@ -100,7 +100,7 @@ export default function PairDevice() {
             </View>
           ))
         ) : (
-          <EmptyState icon="bluetooth-outline" title={scanning ? 'Looking for analysers…' : 'No analyser found yet'} message="Only AquaSense analysers are listed." />
+          <EmptyState icon="bluetooth-outline" title={scanning ? 'Looking for analysers…' : 'No analyser found yet'} message="Only SipSure analysers are listed." />
         )}
       </Card>
     </Screen>

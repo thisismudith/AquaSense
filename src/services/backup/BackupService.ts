@@ -17,7 +17,9 @@ import { nowIso } from '@/utils/id';
 
 import { fileName, type FileStore } from '../storage/FileStore';
 
-export const BACKUP_FORMAT = 'aquasense-backup';
+export const BACKUP_FORMAT = 'sipsure-backup';
+/** Format tag written before the AquaSense → SipSure rename; same schema, still restorable. */
+export const LEGACY_BACKUP_FORMAT = 'aquasense-backup';
 export const BACKUP_VERSION = 1;
 
 const PhotoEntrySchema = z.object({
@@ -26,7 +28,7 @@ const PhotoEntrySchema = z.object({
 });
 
 export const BackupSchema = z.object({
-  format: z.literal(BACKUP_FORMAT),
+  format: z.enum([BACKUP_FORMAT, LEGACY_BACKUP_FORMAT]),
   version: z.number().int(),
   createdAt: z.string(),
   schemaVersion: z.number().int(),
@@ -113,7 +115,7 @@ export class BackupService {
       return { ok: false, reason: 'invalid_json', detail: e instanceof Error ? e.message : String(e) };
     }
     const head = z.object({ format: z.string(), version: z.number() }).safeParse(json);
-    if (!head.success || head.data.format !== BACKUP_FORMAT) return { ok: false, reason: 'wrong_format', detail: 'Not an AquaSense backup file' };
+    if (!head.success || (head.data.format !== BACKUP_FORMAT && head.data.format !== LEGACY_BACKUP_FORMAT)) return { ok: false, reason: 'wrong_format', detail: 'Not a SipSure backup file' };
     if (head.data.version !== BACKUP_VERSION) {
       return { ok: false, reason: 'incompatible_version', detail: `Backup version ${head.data.version} is not supported (expected ${BACKUP_VERSION})` };
     }

@@ -43,10 +43,10 @@ export interface BleManagerDeps {
 }
 
 /** Identifies ESP32-A by advertised service UUID or name prefix (config only). */
-export function isAquaSenseDevice(d: ScannedDevice): boolean {
+export function isSipSureDevice(d: ScannedDevice): boolean {
   return (
     d.serviceUuids.some((u) => u.toLowerCase() === BLE_PROTOCOL.serviceUuid) ||
-    (d.name?.startsWith(BLE_PROTOCOL.deviceNamePrefix) ?? false)
+    [BLE_PROTOCOL.deviceNamePrefix, ...BLE_PROTOCOL.legacyDeviceNamePrefixes].some((p) => d.name?.startsWith(p) ?? false)
   );
 }
 
@@ -134,7 +134,7 @@ export class BLEManager {
     this.set({ state: 'scanning', scanResults: [], lastError: null });
     await this.deps.transport.startScan(
       (d) => {
-        if (!isAquaSenseDevice(d)) return;
+        if (!isSipSureDevice(d)) return;
         const others = this.snap.scanResults.filter((x) => x.id !== d.id);
         this.set({ scanResults: [...others, d].sort((a, b) => (b.rssi ?? -999) - (a.rssi ?? -999)) });
       },

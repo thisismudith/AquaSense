@@ -29,7 +29,7 @@ export default function CsvExport() {
     setMsg(null);
     try {
       const uri = await exporter.writeCsv(data.data);
-      const r = await exporter.share(uri, 'text/csv', 'Share AquaSense CSV');
+      const r = await exporter.share(uri, 'text/csv', 'Share SipSure CSV');
       setMsg(r.ok ? { tone: 'success', text: 'CSV saved and shared.' } : { tone: 'warning', text: `CSV saved to app storage (${uri}). Sharing is not available on this device.` });
     } catch (e) {
       setMsg({ tone: 'danger', text: e instanceof Error ? e.message : String(e) });

@@ -147,7 +147,7 @@ export class BlePlxTransport implements BleTransport {
       const tx = chars.find((c) => c.uuid.toLowerCase() === BLE_PROTOCOL.txCharacteristicUuid);
       if (!rx || !tx || !(tx.isNotifiable || tx.isIndicatable)) {
         await this.manager.cancelDeviceConnection(deviceId).catch(() => undefined);
-        throw new BleError('service_not_found', 'AquaSense service/characteristics not found on this device');
+        throw new BleError('service_not_found', 'SipSure service/characteristics not found on this device');
       }
       const conn = new PlxConnection(this.manager, deviceId, device.localName ?? device.name ?? null, device.mtu ?? BLE_PROTOCOL.defaultMtu, !rx.isWritableWithoutResponse);
       conn.start();

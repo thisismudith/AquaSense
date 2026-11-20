@@ -12,7 +12,7 @@ import { useAppStore } from '@/store/appStore';
 import { useTheme } from '@/theme/ThemeProvider';
 
 const PAGES: { icon: IconName; title: string; body: string }[] = [
-  { icon: 'water-outline', title: 'Lab-grade tests in the field', body: 'Measure hexavalent chromium, nitrite, free chlorine and lead with your AquaSense analyser.' },
+  { icon: 'water-outline', title: 'Lab-grade tests in the field', body: 'Measure hexavalent chromium, nitrite, free chlorine and lead with your SipSure analyser.' },
   { icon: 'list-outline', title: 'Guided, step by step', body: 'Reagent steps, a reaction timer with alerts, and a camera cross-check for every reading.' },
   { icon: 'phone-portrait-outline', title: 'Your data stays here', body: 'Works fully offline. Results, photos and locations are stored only on this phone.' },
 ];
@@ -40,7 +40,7 @@ export default function Welcome() {
       <View style={styles.top}>
         <DropletLogo size={64} />
         <AppText variant="h2" style={styles.light}>
-          AquaSense
+          SipSure
         </AppText>
       </View>
       <View style={[styles.panel, { backgroundColor: theme.colors.surfaceGlass, borderRadius: theme.radii.xl }]}>

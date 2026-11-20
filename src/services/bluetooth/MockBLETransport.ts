@@ -252,7 +252,7 @@ export class MockBLETransport implements BleTransport {
   readonly kind = 'mock' as const;
   adapterState: AdapterState = 'PoweredOn';
   devices: MockESP32[] = [];
-  /** Extra non-AquaSense devices seen while scanning. */
+  /** Extra non-SipSure devices seen while scanning. */
   otherDevices: ScannedDevice[] = [];
   connections = new Set<MockConnection>();
   connectFailures = 0;

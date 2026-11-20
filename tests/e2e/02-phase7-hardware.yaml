@@ -1,4 +1,4 @@
-appId: com.aquasense.analyser
+appId: com.sipsure.analyser
 # Requires: ESP32-A powered and in range, Bluetooth on, reagent batch + calibration available.
 ---
 - launchApp
@@ -35,7 +35,7 @@ appId: com.aquasense.analyser
       - tapOn: "Connect analyser"
       - tapOn: "Search for analyser"
       - tapOn:
-          text: "AquaSense.*"
+          text: "SipSure.*"
       - back
 - tapOn: "Start measurement"
 - extendedWaitUntil:

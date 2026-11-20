@@ -26,7 +26,7 @@ export default function PdfPreview() {
   const [busy, setBusy] = useState<'preview' | 'share' | null>(null);
   const [msg, setMsg] = useState<{ tone: 'success' | 'danger' | 'warning'; text: string } | null>(null);
 
-  const html = () => buildReportHtml(rows.data ?? [], { title: 'AquaSense water quality report', generatedAt: new Date().toISOString(), units, filterSummary: describe(p), includeRaw: p.includeRaw });
+  const html = () => buildReportHtml(rows.data ?? [], { title: 'SipSure water quality report', generatedAt: new Date().toISOString(), units, filterSummary: describe(p), includeRaw: p.includeRaw });
 
   const preview = async () => {
     setBusy('preview');
@@ -45,7 +45,7 @@ export default function PdfPreview() {
     setMsg(null);
     try {
       const uri = await exporter.writePdf(html());
-      const r = await exporter.share(uri, 'application/pdf', 'Share AquaSense report');
+      const r = await exporter.share(uri, 'application/pdf', 'Share SipSure report');
       setMsg(r.ok ? { tone: 'success', text: 'PDF saved and shared.' } : { tone: 'warning', text: `PDF saved to app storage (${uri}). Sharing is not available on this device.` });
     } catch (e) {
       setMsg({ tone: 'danger', text: e instanceof Error ? e.message : String(e) });
@@ -67,7 +67,7 @@ export default function PdfPreview() {
       }
     >
       {msg ? <Banner tone={msg.tone} message={msg.text} testID="pdf-msg" /> : null}
-      <AppText variant="h1">AquaSense water quality report</AppText>
+      <AppText variant="h1">SipSure water quality report</AppText>
       <AppText color="muted">{describe(p)}</AppText>
       <Card>
         {rows.loading ? (

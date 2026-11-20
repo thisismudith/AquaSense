@@ -78,7 +78,7 @@ export default function Settings() {
         <ListRow icon="shield-checkmark-outline" title="Safety information" onPress={go('/settings/safety')} testID="set-safety" />
       </Card>
       <AppText variant="caption" color="muted" align="center">
-        AquaSense {Constants.expoConfig?.version ?? ''} · Offline · Data stays on this phone · BLE protocol v{BLE_PROTOCOL.protocolVersion} ({BLE_PROTOCOL.status})
+        SipSure {Constants.expoConfig?.version ?? ''} · Offline · Data stays on this phone · BLE protocol v{BLE_PROTOCOL.protocolVersion} ({BLE_PROTOCOL.status})
       </AppText>
     </Screen>
   );

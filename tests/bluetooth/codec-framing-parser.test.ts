@@ -74,7 +74,7 @@ describe('parseDeviceFrame (UNIT, provisional protocol)', () => {
   it('parses each message type', () => {
     expect(parseDeviceFrame('{"v":1,"type":"ack","id":3,"ok":true}')).toMatchObject({ ok: true, message: { type: 'ack', id: 3 } });
     expect(parseDeviceFrame('{"v":1,"type":"progress","stage":"dark"}')).toMatchObject({ ok: true });
-    const st = parseDeviceFrame('{"v":1,"type":"status","id":1,"device_id":"E1","name":"AquaSense-A1","firmware":"1.0"}');
+    const st = parseDeviceFrame('{"v":1,"type":"status","id":1,"device_id":"E1","name":"SipSure-A1","firmware":"1.0"}');
     expect(st).toMatchObject({ ok: true, message: { busy: false, self_test: {}, calibrations: {} } });
   });
   it('rejects invalid JSON, wrong version, missing fields', () => {

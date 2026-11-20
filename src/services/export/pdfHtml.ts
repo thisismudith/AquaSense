@@ -51,7 +51,7 @@ export function buildReportHtml(rows: readonly ReportRow[], opts: { title: strin
   <div class="sub">Generated ${escapeHtml(formatDateTime(opts.generatedAt))} on this device · ${rows.length} result(s) · ${escapeHtml(opts.filterSummary)}</div>
   <table><thead><tr><th>Date</th><th>Parameter / method</th><th>Sample</th><th>Result</th><th>Status</th><th>Location</th></tr></thead>
   <tbody>${body || '<tr><td colspan="6">No results match the selected filters.</td></tr>'}</tbody></table>
-  <footer>Concentrations are photometer results reported by the AquaSense analyser (ESP32-A); the camera check validates only. Working ranges are
-  method working values pending lab confirmation and are not regulatory limits. Generated offline by AquaSense.</footer>
+  <footer>Concentrations are photometer results reported by the SipSure analyser (ESP32-A); the camera check validates only. Working ranges are
+  method working values pending lab confirmation and are not regulatory limits. Generated offline by SipSure.</footer>
   </body></html>`;
 }

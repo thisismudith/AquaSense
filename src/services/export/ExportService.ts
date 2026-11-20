@@ -17,14 +17,14 @@ export class ExportService {
     return this.fs.join(this.fs.rootUri, 'exports');
   }
 
-  async writeCsv(csv: string, name = `aquasense-results-${stamp()}.csv`): Promise<string> {
+  async writeCsv(csv: string, name = `sipsure-results-${stamp()}.csv`): Promise<string> {
     await this.fs.ensureDir(this.dir);
     const uri = this.fs.join(this.dir, name);
     await this.fs.writeText(uri, csv);
     return uri;
   }
 
-  async writePdf(html: string, name = `aquasense-report-${stamp()}.pdf`): Promise<string> {
+  async writePdf(html: string, name = `sipsure-report-${stamp()}.pdf`): Promise<string> {
     const { uri: tmp } = await Print.printToFileAsync({ html });
     await this.fs.ensureDir(this.dir);
     const uri = this.fs.join(this.dir, name);
@@ -51,7 +51,7 @@ export class ExportService {
   async writeBackup(json: string): Promise<string> {
     const dir = this.fs.join(this.fs.rootUri, 'backups');
     await this.fs.ensureDir(dir);
-    const uri = this.fs.join(dir, `aquasense-backup-${stamp()}.json`);
+    const uri = this.fs.join(dir, `sipsure-backup-${stamp()}.json`);
     await this.fs.writeText(uri, json);
     return uri;
   }

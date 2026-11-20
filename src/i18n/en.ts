@@ -1,5 +1,5 @@
 export const en = {
-  'app.name': 'AquaSense',
+  'app.name': 'SipSure',
   'app.tagline': 'Field water analysis, offline.',
   'common.continue': 'Continue',
   'common.cancel': 'Cancel',
@@ -64,7 +64,7 @@ export const en = {
   'camera.unknown': 'Camera status: {raw}',
 
   'perm.bluetooth.title': 'Bluetooth access',
-  'perm.bluetooth.why': 'AquaSense needs Bluetooth to find and connect to your analyser. It is not used for location.',
+  'perm.bluetooth.why': 'SipSure needs Bluetooth to find and connect to your analyser. It is not used for location.',
   'perm.camera.title': 'Camera access',
   'perm.camera.why': 'Used only to take a photo of this water sample. Photos stay on this phone.',
   'perm.location.title': 'Location access',
@@ -88,7 +88,7 @@ export const en = {
   'ble.err.device_not_found': 'Analyser not found. Make sure it is switched on and nearby.',
   'ble.err.connect_timeout': 'Connection timed out. Move closer and try again.',
   'ble.err.connect_failed': 'Could not connect to the analyser.',
-  'ble.err.service_not_found': 'This device does not look like an AquaSense analyser.',
+  'ble.err.service_not_found': 'This device does not look like a SipSure analyser.',
   'ble.err.disconnected': 'The analyser disconnected.',
   'ble.err.write_failed': 'Could not send the command.',
   'ble.err.command_timeout': 'The analyser did not respond in time.',

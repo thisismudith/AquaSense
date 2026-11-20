@@ -16,7 +16,9 @@ export const BLE_PROTOCOL = {
   /** Device → phone (notify). */
   txCharacteristicUuid: '6e400003-b5a3-f393-e0a9-e50e24dcca9e',
   /** Advertised name prefix used to identify ESP32-A when the service UUID is not advertised. */
-  deviceNamePrefix: 'AquaSense',
+  deviceNamePrefix: 'SipSure',
+  /** Prefixes from before the AquaSense → SipSure rename; still accepted so existing firmware is found. */
+  legacyDeviceNamePrefixes: ['AquaSense'],
   frameDelimiter: 0x0a,
   maxFrameBytes: 8192,
   /** A partial frame older than this (no further bytes) is discarded so it cannot corrupt the next frame. */

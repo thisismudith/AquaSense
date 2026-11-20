@@ -8,7 +8,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 /** Water-droplet mark with a leaf highlight (brand identity). */
 export function DropletLogo({ size = 72 }: { size?: number }) {
   return (
-    <Svg width={size} height={size} viewBox="0 0 64 64" accessibilityLabel="AquaSense logo">
+    <Svg width={size} height={size} viewBox="0 0 64 64" accessibilityLabel="SipSure logo">
       <Defs>
         <SvgGradient id="drop" x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0" stopColor="#7FD9CB" />

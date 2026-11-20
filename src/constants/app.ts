@@ -1,1 +1,1 @@
-export const APP_NAME = 'AquaSense';
+export const APP_NAME = 'SipSure';

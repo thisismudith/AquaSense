@@ -20,11 +20,11 @@ jest.mock('react-native-ble-plx', () => {
       cb('PoweredOn');
       return { remove: jest.fn() };
     };
-    startDeviceScan = async (_u: unknown, _o: unknown, cb: Listener) => cb(null, { id: 'AA', localName: 'AquaSense-1', name: null, rssi: -50, serviceUUIDs: null });
+    startDeviceScan = async (_u: unknown, _o: unknown, cb: Listener) => cb(null, { id: 'AA', localName: 'SipSure-1', name: null, rssi: -50, serviceUUIDs: null });
     stopDeviceScan = async () => undefined;
     connectToDevice = async (id: string) => {
       if (native.connectError) throw native.connectError;
-      const dev = { id, localName: 'AquaSense-1', name: null, mtu: 185, discoverAllServicesAndCharacteristics: async () => dev, characteristicsForService: async () => native.chars };
+      const dev = { id, localName: 'SipSure-1', name: null, mtu: 185, discoverAllServicesAndCharacteristics: async () => dev, characteristicsForService: async () => native.chars };
       return dev;
     };
     cancelDeviceConnection = async () => {
@@ -68,7 +68,7 @@ describe('BlePlxTransport (UNIT, mocked native module)', () => {
     const t = new BlePlxTransport();
     const seen: unknown[] = [];
     await t.startScan((d) => seen.push(d), jest.fn());
-    expect(seen).toEqual([{ id: 'AA', name: 'AquaSense-1', rssi: -50, serviceUuids: [] }]);
+    expect(seen).toEqual([{ id: 'AA', name: 'SipSure-1', rssi: -50, serviceUuids: [] }]);
     expect(await t.getState()).toBe('PoweredOn');
   });
 
@@ -99,7 +99,7 @@ describe('BlePlxTransport (UNIT, mocked native module)', () => {
     expect(errs).toEqual([null]);
   });
 
-  it('rejects devices without the AquaSense service and disconnects them', async () => {
+  it('rejects devices without the SipSure service and disconnects them', async () => {
     native.chars = [];
     await expect(new BlePlxTransport().connect('AA', { timeoutMs: 1000, mtu: 185 })).rejects.toMatchObject({ code: 'service_not_found' });
     expect(native.cancelled).toBe(1);

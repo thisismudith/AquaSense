@@ -146,8 +146,15 @@ describe('BackupService (UNIT/NODE)', () => {
   it('rejects invalid json, wrong format, incompatible version, bad content', () => {
     expect(BackupService.validate('{nope')).toMatchObject({ ok: false, reason: 'invalid_json' });
     expect(BackupService.validate('{"format":"other","version":1}')).toMatchObject({ ok: false, reason: 'wrong_format' });
-    expect(BackupService.validate(JSON.stringify({ format: 'aquasense-backup', version: BACKUP_VERSION + 1 }))).toMatchObject({ ok: false, reason: 'incompatible_version' });
-    expect(BackupService.validate(JSON.stringify({ format: 'aquasense-backup', version: BACKUP_VERSION, data: {} }))).toMatchObject({ ok: false, reason: 'invalid_content' });
+    expect(BackupService.validate(JSON.stringify({ format: 'sipsure-backup', version: BACKUP_VERSION + 1 }))).toMatchObject({ ok: false, reason: 'incompatible_version' });
+    expect(BackupService.validate(JSON.stringify({ format: 'sipsure-backup', version: BACKUP_VERSION, data: {} }))).toMatchObject({ ok: false, reason: 'invalid_content' });
+  });
+
+  it('accepts backups written before the AquaSense → SipSure rename', async () => {
+    await seed();
+    const b = await new BackupService(r, fs, photos.dir).createBackup();
+    expect(b.format).toBe('sipsure-backup');
+    expect(BackupService.validate(JSON.stringify({ ...b, format: 'aquasense-backup' }))).toMatchObject({ ok: true });
   });
 
   it('rejects unsafe photo file names (path traversal) and invalid settings', async () => {

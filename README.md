@@ -1,15 +1,15 @@
 <div align="center">
 
-# 💧 AquaSense
+# 💧 SipSure
 
 **Field water-quality testing on Android: offline, guided and traceable.**
 
-Companion app for the AquaSense handheld photometric analyser. It measures
+Companion app for the SipSure handheld photometric analyser. It measures
 **Cr(VI)**, **nitrite (NO₂⁻)**, **free chlorine (Cl₂)** and **lead (Pb)**.
 
 [![Platform](https://img.shields.io/badge/platform-Android%207.0%2B-3DDC84?logo=android&logoColor=white)](#-install)
 [![Expo SDK](https://img.shields.io/badge/Expo%20SDK-54-000020?logo=expo)](https://docs.expo.dev/)
-[![Offline](https://img.shields.io/badge/works-100%25%20offline-0E7C7B)](#-why-aquasense)
+[![Offline](https://img.shields.io/badge/works-100%25%20offline-0E7C7B)](#-why-sipsure)
 [![Release](https://img.shields.io/badge/release-v0.1.0-blue)](../../releases/latest)
 
 [**Download APK**](../../releases/latest) · [How to use](#-how-to-use) · [Features](#-features)
@@ -20,8 +20,8 @@ Companion app for the AquaSense handheld photometric analyser. It measures
 
 ## 📑 Table of contents
 
-- [What is AquaSense?](#-what-is-aquasense)
-- [Why AquaSense?](#-why-aquasense)
+- [What is SipSure?](#-what-is-sipsure)
+- [Why SipSure?](#-why-sipsure)
 - [Features](#-features)
 - [Install](#-install)
 - [How to use](#-how-to-use)
@@ -29,17 +29,17 @@ Companion app for the AquaSense handheld photometric analyser. It measures
 - [Project status](#-project-status)
 - [For developers](#-for-developers)
 
-## 🔬 What is AquaSense?
+## 🔬 What is SipSure?
 
-AquaSense pairs an **ESP32-based handheld photometer** with this Android app. The analyser measures the
+SipSure pairs an **ESP32-based handheld photometer** with this Android app. The analyser measures the
 absorbance of a reacted water sample. The app guides the technician through the test, then stores the
 result with its photo, location and reagent batch. It also produces reports.
 
 Everything stays **on the phone**. There is no account, no server and no internet connection.
 
-## 💡 Why AquaSense?
+## 💡 Why SipSure?
 
-| Problem in the field | How AquaSense helps |
+| Problem in the field | How SipSure helps |
 |---|---|
 | Paper logs get lost and are hard to audit | Each result is saved with sample ID, time, GPS, photo, reagent batch and calibration version |
 | Steps get skipped or timed by guesswork | An 8-step guided wizard with a reaction timer that keeps the screen on and alerts when the reaction is complete |
@@ -65,9 +65,9 @@ Everything stays **on the phone**. There is no account, no server and no interne
 
 ## 📲 Install
 
-1. Download **[`AquaSense-0.1.0.apk`](../../releases/latest)** on your phone.
+1. Download **[`SipSure-0.1.0.apk`](../../releases/latest)** on your phone.
 2. Open it and allow *Install unknown apps* for your browser or file manager when asked.
-3. Launch **AquaSense**.
+3. Launch **SipSure**.
 
 > Requires Android 7.0 or newer on an ARM phone (almost every phone). About 50 MB.
 
@@ -125,8 +125,8 @@ npx expo prebuild --platform android --no-install
 cd android && ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
 ```
 
-Signing reads a keystore properties file kept **outside the repository** (`~/.aquasense/keystore.properties`
-or `$AQUASENSE_KEYSTORE_PROPERTIES`).
+Signing reads a keystore properties file kept **outside the repository** (`~/.sipsure/keystore.properties`
+or `$SIPSURE_KEYSTORE_PROPERTIES`).
 
 **Stack:** Expo SDK 54 · React Native 0.81 · React 19.1 · TypeScript · Expo Router · SQLite · Zustand · Zod ·
 react-native-ble-plx · Jest + React Native Testing Library

@@ -1,4 +1,4 @@
-/** AquaSense design tokens — deep teal / aquatic green, mint translucent panels (SCREENSHOT_CATALOG). */
+/** SipSure design tokens — deep teal / aquatic green, mint translucent panels (SCREENSHOT_CATALOG). */
 export const palette = {
   teal950: '#06201F',
   teal900: '#0A2F2D',

@@ -27,7 +27,7 @@ export default function BackupRestore() {
     try {
       const b = await backup.createBackup();
       const uri = await exporter.writeBackup(JSON.stringify(b));
-      const r = await exporter.share(uri, 'application/json', 'Save AquaSense backup');
+      const r = await exporter.share(uri, 'application/json', 'Save SipSure backup');
       setMsg({ tone: r.ok ? 'success' : 'warning', text: `Backup created: ${b.data.results.length} results, ${b.data.samples.length} samples, ${b.photos.length} photos.${r.ok ? '' : ` Saved in app storage at ${uri}.`}` });
     } catch (e) {
       setMsg({ tone: 'danger', text: e instanceof Error ? e.message : String(e) });
@@ -87,7 +87,7 @@ export default function BackupRestore() {
       </Card>
       <Card>
         <AppText variant="title">Restore</AppText>
-        <AppText color="muted">Choose an AquaSense backup file. It is validated before anything is changed.</AppText>
+        <AppText color="muted">Choose a SipSure backup file. It is validated before anything is changed.</AppText>
         <Button label="Choose backup file" icon="folder-open-outline" variant="secondary" loading={busy === 'pick'} onPress={() => void pick()} testID="backup-pick" />
       </Card>
       {pending ? (

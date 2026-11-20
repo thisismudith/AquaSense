@@ -35,9 +35,9 @@ afterEach(async () => {
 });
 
 describe('scan (MOCK-BLE)', () => {
-  it('lists only AquaSense devices (service UUID or name prefix)', async () => {
+  it('lists only SipSure devices (service UUID or name prefix)', async () => {
     transport.otherDevices = [{ id: 'X', name: 'Headphones', rssi: -40, serviceUuids: [] }];
-    const byName = new MockESP32({ bleId: 'B2', name: 'AquaSense-B', advertiseService: false, rssi: -80 });
+    const byName = new MockESP32({ bleId: 'B2', name: 'SipSure-B', advertiseService: false, rssi: -80 });
     transport.devices.push(byName);
     await mgr.startScan();
     await flush();
@@ -45,6 +45,14 @@ describe('scan (MOCK-BLE)', () => {
     expect(mgr.snapshot.state).toBe('scanning');
     await mgr.stopScan();
     expect(mgr.snapshot.state).toBe('idle');
+  });
+
+  it('still lists firmware advertising the pre-rename AquaSense name prefix', async () => {
+    transport.devices.push(new MockESP32({ bleId: 'L1', name: 'AquaSense-Old', advertiseService: false, rssi: -70 }));
+    await mgr.startScan();
+    await flush();
+    expect(mgr.snapshot.scanResults.map((d) => d.id)).toContain('L1');
+    await mgr.stopScan();
   });
 
   it.each([

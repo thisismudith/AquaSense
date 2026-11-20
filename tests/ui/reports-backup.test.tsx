@@ -100,11 +100,11 @@ describe('Screens 28–30', () => {
     renderScreen(<PdfPreview />);
     await waitFor(() => expect(screen.getByTestId('row-T-1')).toBeTruthy());
     await act(async () => fireEvent.press(screen.getByTestId('pdf-open')));
-    expect(Print.printAsync).toHaveBeenCalledWith({ html: expect.stringContaining('AquaSense water quality report') });
+    expect(Print.printAsync).toHaveBeenCalledWith({ html: expect.stringContaining('SipSure water quality report') });
     await act(async () => fireEvent.press(screen.getByTestId('pdf-share')));
     await waitFor(() => expect(screen.getByTestId('pdf-msg')).toHaveTextContent(/PDF saved and shared/));
     const [uri, opts] = (Sharing.shareAsync as jest.Mock).mock.calls[0];
-    expect(uri).toMatch(/\/exports\/aquasense-report-.*\.pdf$/);
+    expect(uri).toMatch(/\/exports\/sipsure-report-.*\.pdf$/);
     expect(opts).toMatchObject({ mimeType: 'application/pdf' });
     expect(app.fs.files.has('file:///cache/print.pdf')).toBe(false);
   });
@@ -134,7 +134,7 @@ describe('Screen 40 — backup & restore', () => {
     (DocumentPicker.getDocumentAsync as jest.Mock).mockResolvedValue({ canceled: false, assets: [{ uri: 'file:///cache/bad.json', name: 'bad.json' }] });
     renderScreen(<BackupRestore />);
     await act(async () => fireEvent.press(screen.getByTestId('backup-pick')));
-    await waitFor(() => expect(screen.getByTestId('backup-msg')).toHaveTextContent(/Not an AquaSense backup/));
+    await waitFor(() => expect(screen.getByTestId('backup-msg')).toHaveTextContent(/Not a SipSure backup/));
     expect(screen.queryByTestId('backup-summary')).toBeNull();
   });
 

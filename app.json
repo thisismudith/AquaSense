@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "AquaSense",
-    "slug": "aquasense",
-    "scheme": "aquasense",
+    "name": "SipSure",
+    "slug": "sipsure",
+    "scheme": "sipsure",
     "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +14,7 @@
       "backgroundColor": "#0F4C4A"
     },
     "android": {
-      "package": "com.aquasense.analyser",
+      "package": "com.sipsure.analyser",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -51,7 +51,7 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "AquaSense uses your location only when you choose to geotag a water sample.",
+          "locationWhenInUsePermission": "SipSure uses your location only when you choose to geotag a water sample.",
           "isAndroidBackgroundLocationEnabled": false,
           "isAndroidForegroundServiceEnabled": false
         }
@@ -59,8 +59,8 @@
       [
         "expo-image-picker",
         {
-          "cameraPermission": "AquaSense uses the camera only when you take a photo of a water sample.",
-          "photosPermission": "AquaSense lets you attach a photo of a water sample from your gallery.",
+          "cameraPermission": "SipSure uses the camera only when you take a photo of a water sample.",
+          "photosPermission": "SipSure lets you attach a photo of a water sample from your gallery.",
           "microphonePermission": false
         }
       ],

@@ -34,8 +34,8 @@ const waitFor = async (pred: () => boolean, ms = 3000) => {
 };
 
 describe('Phase 7 flow (MOCK-BLE, service level)', () => {
-  const dir = mkdtempSync(join(tmpdir(), 'aquasense-e2e-'));
-  const dbPath = join(dir, 'aquasense.db');
+  const dir = mkdtempSync(join(tmpdir(), 'sipsure-e2e-'));
+  const dbPath = join(dir, 'sipsure.db');
   const fs = createMemoryFileStore();
   const device = new MockESP32({ measurementMs: 40, raw: { nitrite: { idark: 150, iblank: 20150, isample: 10150 } } });
   const transport = new MockBLETransport([device]);

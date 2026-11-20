@@ -2,7 +2,7 @@ import * as SQLite from 'expo-sqlite';
 
 import { createTransactionRunner, type Database, type SqlParams } from './types';
 
-export async function openExpoDatabase(name = 'aquasense.db'): Promise<Database> {
+export async function openExpoDatabase(name = 'sipsure.db'): Promise<Database> {
   const native = await SQLite.openDatabaseAsync(name);
   const base = {
     exec: (sql: string) => native.execAsync(sql),

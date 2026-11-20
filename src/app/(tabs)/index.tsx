@@ -42,7 +42,7 @@ export default function Home() {
       <View style={styles.top}>
         <View style={styles.brand}>
           <DropletLogo size={34} />
-          <AppText variant="h2">AquaSense</AppText>
+          <AppText variant="h2">SipSure</AppText>
         </View>
         <Pressable accessibilityRole="button" accessibilityLabel={`Notifications, ${alertCount} alerts`} onPress={() => router.push('/notifications')} hitSlop={10} testID="home-bell">
           <Ionicons name="notifications-outline" size={26} color={theme.colors.primary} />
